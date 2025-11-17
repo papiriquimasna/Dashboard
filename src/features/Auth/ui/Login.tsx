@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { CreditCard, AlertCircle } from 'lucide-react';
 import { useUser } from '../../../context/UserContext';
 
+// Importar el logo correctamente (SOLUCIÓN)
+import LogoOnpe from '../../../assets/onpelogito.svg';
+
 // Generar burbujas aleatorias fuera del componente para que no cambien
 const generateBubbles = () => Array.from({ length: 15 }, (_, i) => ({
   id: i,
-  size: Math.random() * 150 + 80, // Aumentado de 100+50 a 150+80 (80-230px)
+  size: Math.random() * 150 + 80,
   left: Math.random() * 100,
   delay: Math.random() * 5,
   duration: Math.random() * 5 + 8,
@@ -15,18 +18,18 @@ const generateBubbles = () => Array.from({ length: 15 }, (_, i) => ({
 // Cuentas predefinidas
 const PREDEFINED_ACCOUNTS = {
   '12345678': {
-    nombre: 'Juan Carlos',
-    apellido: 'Pérez García',
+    nombre: 'Josue ',
+    apellido: 'Ochoa Reyes',
     dni: '12345678',
-    email: 'juan.perez@onpe.gob.pe',
+    email: 'josueochoa@gmail.com',
     rol: 'Usuario',
     foto: '',
   },
   '87654321': {
-    nombre: 'María Elena',
-    apellido: 'Rodríguez López',
+    nombre: 'Milagros Naomi',
+    apellido: 'Visha',
     dni: '87654321',
-    email: 'maria.rodriguez@onpe.gob.pe',
+    email: 'naomin@gmail.com',
     rol: 'Administrador',
     foto: '',
   },
@@ -38,7 +41,6 @@ const Login = () => {
   const navigate = useNavigate();
   const { updateUserData } = useUser();
   
-  // Memorizar las burbujas para que no cambien en cada render
   const bubbles = useMemo(() => generateBubbles(), []);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -49,16 +51,13 @@ const Login = () => {
       const account = PREDEFINED_ACCOUNTS[dni as keyof typeof PREDEFINED_ACCOUNTS];
       
       if (account) {
-        // Verificar si hay datos guardados para este usuario específico
         const savedData = localStorage.getItem(`userData_${dni}`);
         let userDataToLoad = account;
         
         if (savedData) {
-          // Usar los datos guardados del usuario
           userDataToLoad = JSON.parse(savedData);
         }
         
-        // Usuario válido - actualizar datos y permitir acceso
         updateUserData(userDataToLoad);
         localStorage.setItem('isAuthenticated', 'true');
         localStorage.setItem('userDni', dni);
@@ -66,7 +65,6 @@ const Login = () => {
         window.dispatchEvent(new Event('authChange'));
         navigate('/');
       } else {
-        // DNI no registrado
         setError('DNI no registrado en el sistema. Por favor, contacta al administrador.');
       }
     }
@@ -89,37 +87,24 @@ const Login = () => {
         />
       ))}
 
-      {/* Estilos de animación */}
       <style>{`
         @keyframes fall {
-          0% {
-            transform: translateY(-100vh);
-            opacity: 0;
-          }
-          5% {
-            opacity: 0.2;
-          }
-          50% {
-            opacity: 0.3;
-          }
-          95% {
-            opacity: 0.2;
-          }
-          100% {
-            transform: translateY(100vh);
-            opacity: 0;
-          }
+          0% { transform: translateY(-100vh); opacity: 0; }
+          5% { opacity: 0.2; }
+          50% { opacity: 0.3; }
+          95% { opacity: 0.2; }
+          100% { transform: translateY(100vh); opacity: 0; }
         }
       `}</style>
 
       {/* Tarjeta de login */}
       <div className="relative z-10 bg-white rounded-2xl shadow-2xl p-10 w-full max-w-md">
-        {/* Logo */}
+        
+        {/* Logo (CORREGIDO) */}
         <div className="flex justify-center mb-6">
-          <img src="/src/assets/onpelogito.svg" alt="ONPE Logo" className="h-24" />
+          <img src={LogoOnpe} alt="ONPE Logo" className="h-24" />
         </div>
 
-        {/* Título */}
         <h2 className="text-center text-slate-800 font-semibold text-lg mb-2">
           Bienvenido al Sistema Electoral
         </h2>
@@ -127,9 +112,8 @@ const Login = () => {
           Ingresa tu DNI para acceder
         </p>
 
-        {/* Formulario */}
         <form onSubmit={handleLogin} className="space-y-6">
-          {/* Campo DNI */}
+
           <div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -152,8 +136,7 @@ const Login = () => {
                 required
               />
             </div>
-            
-            {/* Mensaje de error */}
+
             {error && (
               <div className="mt-3 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
@@ -162,7 +145,6 @@ const Login = () => {
             )}
           </div>
 
-          {/* Botón de login */}
           <button
             type="submit"
             className="w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 rounded-lg transition-colors shadow-md"
@@ -171,7 +153,6 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Footer */}
         <p className="text-center text-xs text-slate-400 mt-6">
           ONPE - Oficina Nacional de Procesos Electorales
         </p>
